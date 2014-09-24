@@ -1,0 +1,86 @@
+(require 'package)
+; add MELPA to repository list
+(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
+; initialize package.el
+(package-initialize)
+
+; TO GET THIS RUN M-x package-install auto-complete
+; start auto-complete with emacs
+(require 'auto-complete)
+; do default config for auto-complete
+(require 'auto-complete-config)
+(ac-config-default)
+
+; M-x package-install yasnippet
+; yasnippet (gives us templates for loops and functions and stuff)
+(require 'yasnippet)
+(yas-global-mode 1)
+
+; package-install auto-complete-c-headers
+(defun my:ac-c-header-init ()
+  (require 'auto-complete-c-headers)
+  (add-to-list 'ac-sources 'ac-source-c-headers)
+)
+; now let's call this function from c/c++ hooks
+(add-hook 'c++-mode-hook 'my:ac-c-header-init)
+(add-hook 'c-mode-hook 'my:ac-c-header-init)
+
+
+; package-install iedit
+; (Weird bug with iedit)
+(define-key global-map (kbd "C-c ;") 'iedit-mode)
+
+; package-install ecb
+(require 'ecb)
+
+
+(setq default-frame-alist
+      '((top . 250) (left . 400)
+        (width . 80) (height . 600)
+        (cursor-color . "white")
+        (cursor-type . box)
+        (foreground-color . "blue")
+        (background-color . "white")
+        (font . "-*-Courier-normal-r-*-*-14-*-*-*-c-*-iso8859-1")))
+
+(setq initial-frame-alist '((top . 50) (left . 30)))
+
+;; Pyret
+(ignore-errors
+  (add-to-list 'load-path (expand-file-name "~/.emacs.d/"))
+  (require 'pyret)
+  (add-to-list 'auto-mode-alist '("\\.arr$" . pyret-mode))
+  (add-to-list 'file-coding-system-alist '("\\.arr\\'" . utf-8)))
+
+;; C
+(setq c-default-style "bsd"
+          c-basic-offset 4)
+(setq column-number-mode t)
+(add-to-list 'default-frame-alist '(height . 55))
+(add-to-list 'default-frame-alist '(width . 80))
+
+;; cedet setup
+; turn on Semantic
+(semantic-mode 1)
+; let's define a function which adds semantic as a suggestion backend to auto complete
+; and hook this function to c-mode-common-hook
+(defun my:add-semantic-to-autocomplete() 
+  (add-to-list 'ac-sources 'ac-source-semantic)
+)
+(add-hook 'c-mode-common-hook 'my:add-semantic-to-autocomplete)
+(global-semantic-idle-scheduler-mode 1)
+
+
+;; to rename a variable
+;; C-c , g (symref) then type in varname
+;; C-c C-e (open references)
+;; R (capital) to rename 
+
+
+
+
+
+
+
+
+
