@@ -55,6 +55,12 @@
 ;; C
 (setq c-default-style "bsd"
           c-basic-offset 4)
+
+;; Use spaces insteads of tabs
+(setq tab-width 4)
+(setq-default indent-tabs-mode nil)
+
+
 (setq column-number-mode t)
 (add-to-list 'default-frame-alist '(height . 55))
 (add-to-list 'default-frame-alist '(width . 80))
@@ -75,12 +81,3 @@
 ;; C-c , g (symref) then type in varname
 ;; C-c C-e (open references)
 ;; R (capital) to rename 
-
-
-
-
-
-
-
-
-
