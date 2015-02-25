@@ -43,6 +43,10 @@
         (background-color . "white")
         (font . "-*-Courier-normal-r-*-*-14-*-*-*-c-*-iso8859-1")))
 
+;; Use ibuffer instead of regular buffer list
+(global-set-key (kbd "C-x C-b") 'ibuffer)
+
+
 (setq initial-frame-alist '((top . 50) (left . 30)))
 
 ;; Pyret
