@@ -1,7 +1,7 @@
 (require 'package)
 ; add MELPA to repository list
 (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
-; initialize package.el
+; initialize package.elx
 (package-initialize)
 
 ; TO GET THIS RUN M-x package-install auto-complete
@@ -9,7 +9,15 @@
 (require 'auto-complete)
 ; do default config for auto-complete
 (require 'auto-complete-config)
-(ac-config-default)
+(global-auto-complete-mode t)
+
+(set-default 'ac-sources
+             '(ac-source-imenu
+               ac-source-dictionary
+               ac-source-words-in-buffer
+               ac-source-words-in-same-mode-buffers
+               ac-source-words-in-all-buffer))
+;;(ac-config-default)
 
 ; M-x package-install yasnippet
 ; yasnippet (gives us templates for loops and functions and stuff)
