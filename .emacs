@@ -100,3 +100,14 @@
     (lambda () (interactive) (next-line 5)))
 (global-set-key (kbd "M-p")
     (lambda () (interactive) (previous-line 5)))
+
+;; ecb key binding stuff
+(global-set-key (kbd "<M-left>") 'ecb-goto-window-methods)
+(global-set-key (kbd "<M-right>") 'ecb-goto-window-edit1)
+
+(global-set-key (kbd "<C-left>") 'windmove-left)
+(global-set-key (kbd "<C-right>") 'windmove-right)
+(global-set-key (kbd "<C-up>") 'windmove-up)
+(global-set-key (kbd "<C-down>") 'windmove-down)
+
+
