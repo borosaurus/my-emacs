@@ -110,4 +110,6 @@
 (global-set-key (kbd "<C-up>") 'windmove-up)
 (global-set-key (kbd "<C-down>") 'windmove-down)
 
-
+;; Rust
+;; allow autocomplete in rust mode
+(add-to-list 'ac-modes 'rust-mode)
