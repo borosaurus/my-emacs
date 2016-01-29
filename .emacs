@@ -113,3 +113,6 @@
 ;; Rust
 ;; allow autocomplete in rust mode
 (add-to-list 'ac-modes 'rust-mode)
+
+(add-to-list 'default-frame-alist '(foreground-color . "#E0DFDB"))
+(add-to-list 'default-frame-alist '(background-color . "#102372"))
