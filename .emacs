@@ -17,6 +17,10 @@
                ac-source-words-in-buffer
                ac-source-words-in-same-mode-buffers
                ac-source-words-in-all-buffer))
+
+;; M-x package-install xscope
+(require 'xcscope)
+
 ;;(ac-config-default)
 
 ; M-x package-install yasnippet
@@ -114,5 +118,12 @@
 ;; allow autocomplete in rust mode
 (add-to-list 'ac-modes 'rust-mode)
 
+;; Go
+;; M-x package-install go-mode
+(add-to-list 'ac-modes 'go-mode)
+
 (add-to-list 'default-frame-alist '(foreground-color . "#E0DFDB"))
 (add-to-list 'default-frame-alist '(background-color . "#102372"))
+
+
+
