@@ -1,8 +1,19 @@
+(setq package-list '(auto-complete yasnippet xcscope ecb))
+
 (require 'package)
 ; add MELPA to repository list
 (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
 ; initialize package.elx
 (package-initialize)
+
+; fetch the list of packages available 
+(unless package-archive-contents
+  (package-refresh-contents))
+
+; install the missing packages
+(dolist (package package-list)
+  (unless (package-installed-p package)
+    (package-install package)))
 
 ; TO GET THIS RUN M-x package-install auto-complete
 ; start auto-complete with emacs
@@ -53,7 +64,8 @@
         (cursor-type . box)
         (foreground-color . "blue")
         (background-color . "white")
-        (font . "-*-Courier-normal-r-*-*-14-*-*-*-c-*-iso8859-1")))
+        (font . "Monaco 24")))
+;;(font . "-*-Courier-normal-r-*-*-24-*-*-*-c-*-iso8859-1")))
 
 ;; Use ibuffer instead of regular buffer list
 (global-set-key (kbd "C-x C-b") 'ibuffer)
@@ -124,6 +136,3 @@
 
 (add-to-list 'default-frame-alist '(foreground-color . "#E0DFDB"))
 (add-to-list 'default-frame-alist '(background-color . "#102372"))
-
-
-
