@@ -64,8 +64,7 @@
         (cursor-type . box)
         (foreground-color . "blue")
         (background-color . "white")
-        (font . "Monaco 24")))
-;;(font . "-*-Courier-normal-r-*-*-24-*-*-*-c-*-iso8859-1")))
+        (font . "DejaVu Sans Mono-18")))
 
 ;; Use ibuffer instead of regular buffer list
 (global-set-key (kbd "C-x C-b") 'ibuffer)
@@ -136,3 +135,10 @@
 
 (add-to-list 'default-frame-alist '(foreground-color . "#E0DFDB"))
 (add-to-list 'default-frame-alist '(background-color . "#102372"))
+
+;; command to create the tags file
+(defun create-tags (dir-name)
+  "Create tags file."
+  (interactive "DDirectory: ")
+  (eshell-command 
+   (format "find %s -type f -name \"*.[ch]\" | etags -" dir-name)))
