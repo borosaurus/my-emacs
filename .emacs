@@ -133,6 +133,11 @@
 (add-to-list 'ac-modes 'go-mode)
 (add-hook 'before-save-hook #'gofmt-before-save)
 
+
+
+(add-hook 'prog-mode-hook #'cscope-minor-mode)
+
+
 ;; colors
 (add-to-list 'default-frame-alist '(foreground-color . "#E0DFDB"))
 (add-to-list 'default-frame-alist '(background-color . "#102372"))
@@ -143,3 +148,4 @@
   (interactive "DDirectory: ")
   (eshell-command 
    (format "find %s -type f -name \"*.[ch]\" | etags -" dir-name)))
+
