@@ -1,4 +1,6 @@
-(setq package-list '(auto-complete yasnippet xcscope ecb))
+(setq package-list '(auto-complete yasnippet xcscope ecb go-mode flycheck py-autopep8))
+
+;; autopep8 requires you to sudo apt-get install python-autopep8
 
 (require 'package)
 ; add MELPA to repository list
@@ -31,6 +33,10 @@
 
 ;; M-x package-install xscope
 (require 'xcscope)
+
+;; Use flycheck whenever we can
+;; For python you need to sudo apt-get install pylint
+(add-hook 'after-init-hook #'global-flycheck-mode)
 
 ;;(ac-config-default)
 
