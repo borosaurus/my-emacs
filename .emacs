@@ -1,4 +1,4 @@
-(setq package-list '(auto-complete yasnippet xcscope ecb go-mode flycheck py-autopep8))
+(setq package-list '(auto-complete yasnippet xcscope ecb go-mode py-autopep8))
 
 ;; autopep8 requires you to sudo apt-get install python-autopep8
 
