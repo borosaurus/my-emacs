@@ -30,6 +30,8 @@
                ac-source-words-in-buffer
                ac-source-words-in-same-mode-buffers
                ac-source-words-in-all-buffer))
+;; don't ignore case in providing ac matches
+(setq ac-ignore-case nil)
 
 ;; M-x package-install xscope
 (require 'xcscope)
