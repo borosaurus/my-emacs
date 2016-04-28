@@ -47,16 +47,6 @@
 (require 'yasnippet)
 (yas-global-mode 1)
 
-; package-install auto-complete-c-headers
-(defun my:ac-c-header-init ()
-  (require 'auto-complete-c-headers)
-  (add-to-list 'ac-sources 'ac-source-c-headers)
-)
-; now let's call this function from c/c++ hooks
-(add-hook 'c++-mode-hook 'my:ac-c-header-init)
-(add-hook 'c-mode-hook 'my:ac-c-header-init)
-
-
 ; package-install iedit
 ; (Weird bug with iedit)
 (define-key global-map (kbd "C-c ;") 'iedit-mode)
@@ -99,18 +89,6 @@
 (setq column-number-mode t)
 (add-to-list 'default-frame-alist '(height . 55))
 (add-to-list 'default-frame-alist '(width . 80))
-
-;; cedet setup
-; turn on Semantic
-(semantic-mode 1)
-; let's define a function which adds semantic as a suggestion backend to auto complete
-; and hook this function to c-mode-common-hook
-(defun my:add-semantic-to-autocomplete() 
-  (add-to-list 'ac-sources 'ac-source-semantic)
-)
-(add-hook 'c-mode-common-hook 'my:add-semantic-to-autocomplete)
-(global-semantic-idle-scheduler-mode 1)
-
 
 ;; to rename a variable
 ;; C-c , g (symref) then type in varname
