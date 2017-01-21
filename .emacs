@@ -77,13 +77,15 @@
   (add-to-list 'auto-mode-alist '("\\.arr$" . pyret-mode))
   (add-to-list 'file-coding-system-alist '("\\.arr\\'" . utf-8)))
 
-;; C
-(setq c-default-style "bsd"
-          c-basic-offset 4)
 
 ;; Use spaces insteads of tabs
 (setq tab-width 4)
 (setq-default indent-tabs-mode nil)
+
+;; C
+(setq c-default-style "bsd"
+      c-basic-offset 4)
+
 
 
 (setq column-number-mode t)
@@ -103,13 +105,41 @@
     (lambda () (interactive) (previous-line 5)))
 
 ;; ecb key binding stuff
-(global-set-key (kbd "<M-left>") 'ecb-goto-window-methods)
-(global-set-key (kbd "<M-right>") 'ecb-goto-window-edit1)
+;;(global-set-key (kbd "<M-left>") 'ecb-goto-window-methods)
+;;(global-set-key (kbd "<M-right>") 'ecb-goto-window-edit1)
 
-(global-set-key (kbd "<C-left>") 'windmove-left)
-(global-set-key (kbd "<C-right>") 'windmove-right)
-(global-set-key (kbd "<C-up>") 'windmove-up)
-(global-set-key (kbd "<C-down>") 'windmove-down)
+(global-set-key (kbd "<M-left>") 'windmove-left)
+(global-set-key (kbd "<M-right>") 'windmove-right)
+(global-set-key (kbd "<M-up>") 'windmove-up)
+(global-set-key (kbd "<M-down>") 'windmove-down)
+
+;; gtags setup
+(require 'ggtags)
+(add-hook 'c-mode-common-hook
+          (lambda ()
+            (when (derived-mode-p 'c-mode 'c++-mode 'java-mode 'asm-mode)
+              (ggtags-mode 1))))
+
+(define-key ggtags-mode-map (kbd "C-c t s") 'ggtags-find-other-symbol)
+;;(define-key ggtags-mode-map (kbd "C-c t d") 'ggtags-find-definition)
+;; this bound to M-.
+(define-key ggtags-mode-map (kbd "C-c t h") 'ggtags-view-tag-history)
+(define-key ggtags-mode-map (kbd "C-c t r") 'ggtags-find-reference)
+(define-key ggtags-mode-map (kbd "C-c t f") 'ggtags-find-file)
+(define-key ggtags-mode-map (kbd "C-c t c") 'ggtags-create-tags)
+(define-key ggtags-mode-map (kbd "C-c t u") 'ggtags-update-tags)
+(define-key ggtags-mode-map (kbd "C-c t g") 'ggtags-grep)
+(define-key ggtags-mode-map (kbd "C-c t n") 'ggtags-navigation-mode-abort)
+
+
+;; (define-key ggtags-mode-map (kbd "M-,") 'pop-tag-mark)
+
+;; hs-minor mode (for collapsing braces)
+(add-hook 'c-mode-common-hook 'hs-minor-mode)
+(global-set-key (kbd "C-c h h") 'hs-hide-block)
+(global-set-key (kbd "C-c h s") 'hs-show-block)
+(global-set-key (kbd "C-c h a") 'hs-hide-all)
+(global-set-key (kbd "C-c h n") 'hs-show-all)
 
 ;; Rust
 ;; allow autocomplete in rust mode
@@ -120,8 +150,15 @@
 (add-hook 'before-save-hook #'gofmt-before-save)
 
 
+;; be able to list all functions in buffer
+(require 'imenu-list)
+(global-set-key (kbd "C-'") #'imenu-list-minor-mode)
+(setq imenu-list-focus-after-activation t)
 
-(add-hook 'prog-mode-hook #'cscope-minor-mode)
+
+
+;; cscope
+;;(add-hook 'prog-mode-hook #'cscope-minor-mode)
 
 
 ;; colors
@@ -132,13 +169,39 @@
 (defun create-tags (dir-name)
   "Create tags file."
   (interactive "DDirectory: ")
-  (eshell-command 
+  (eshell-command
    (format "find %s -type f -name \"*.[ch]\" | etags -" dir-name)))
 
 
 (setq ibuffer-formats
       '((mark modified read-only " "
-              (name 30 30 :left :elide) " "
+              (name 45 45 :left :elide) " "
               (size 9 -1 :right) " "
               (mode 16 16 :left :elide) " " filename-and-process)
         (mark " " (name 16 -1) " " filename)))
+
+
+;; Whitespace 80 char limit thing
+(require 'whitespace)
+(setq whitespace-style '(face empty tabs lines-tail trailing))
+(global-whitespace-mode t)
+
+;; drag-stuff mode
+(drag-stuff-mode t)
+(drag-stuff-global-mode 1)
+(global-set-key (kbd "C-c h n") 'hs-show-all)
+
+(global-set-key (kbd "C-S-n") 'drag-stuff-down)
+(global-set-key (kbd "C-S-p") 'drag-stuff-up)
+
+
+;; OSX ONLY
+;;(setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
+;;(setq exec-path (append exec-path '("/usr/local/bin")))
+
+;; Cool tricks (to print 1, 2, 3, and so on on each line)
+;; (dotimes (i 20) (insert (format "%d\n" (1+ i))))
+
+
+;; to get bindings for a command: C-h f
+;; to get function for key: C-h k
