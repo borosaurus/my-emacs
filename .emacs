@@ -60,8 +60,8 @@
         (width . 80) (height . 600)
         (cursor-color . "white")
         (cursor-type . box)
-        (foreground-color . "blue")
-        (background-color . "white")
+        ;; (foreground-color . "blue")
+        ;; (background-color . "white")
         (font . "DejaVu Sans Mono-18")))
 
 ;; Use ibuffer instead of regular buffer list
@@ -194,6 +194,18 @@
 (global-set-key (kbd "C-S-n") 'drag-stuff-down)
 (global-set-key (kbd "C-S-p") 'drag-stuff-up)
 
+;; pretty theme
+(load-theme 'ample t t)
+;;(load-theme 'ample-flat t t)
+;;(load-theme 'ample-light t t)
+
+;; choose one to enable
+(enable-theme 'ample)
+
+;;
+(setq ido-enable-flex-matching t)
+(setq ido-everywhere t)
+(ido-mode 1)
 
 ;; OSX ONLY
 ;;(setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
