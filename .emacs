@@ -1,4 +1,4 @@
-(setq package-list '(auto-complete yasnippet xcscope ecb go-mode py-autopep8))
+(setq package-list '(auto-complete yasnippet xcscope ecb go-mode py-autopep8 ample-theme drag-stuff imenu-list))
 
 ;; autopep8 requires you to sudo apt-get install python-autopep8
 
@@ -76,6 +76,7 @@
   (require 'pyret)
   (add-to-list 'auto-mode-alist '("\\.arr$" . pyret-mode))
   (add-to-list 'file-coding-system-alist '("\\.arr\\'" . utf-8)))
+(add-to-list 'ac-modes 'pyret-mode)
 
 
 ;; Use spaces insteads of tabs
@@ -206,6 +207,17 @@
 (setq ido-enable-flex-matching t)
 (setq ido-everywhere t)
 (ido-mode 1)
+
+;; magit
+(global-set-key (kbd "C-x g") 'magit-status)
+
+;; Switch to other window and make it main window
+(defun other-window-kill-buffer ()
+  "Kill the other window"
+  (interactive)
+  (other-window 1)
+  (delete-other-windows))
+(global-set-key (kbd "C-x K") 'other-window-kill-buffer)
 
 ;; OSX ONLY
 ;;(setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
