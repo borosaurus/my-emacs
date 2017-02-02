@@ -199,9 +199,15 @@
 (load-theme 'ample t t)
 ;;(load-theme 'ample-flat t t)
 ;;(load-theme 'ample-light t t)
-
 ;; choose one to enable
 (enable-theme 'ample)
+
+(add-hook 'after-make-frame-functions
+          (lambda (frame)
+            (with-selected-frame frame
+              (load-theme 'ample t t)
+              (enable-theme 'ample))))
+
 
 ;;
 (setq ido-enable-flex-matching t)
@@ -229,3 +235,19 @@
 
 ;; to get bindings for a command: C-h f
 ;; to get function for key: C-h k
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(ansi-color-names-vector
+   ["#454545" "#cd5542" "#6aaf50" "#baba36" "#5180b3" "#ab75c3" "#68a5e9" "#bdbdb3"])
+ '(custom-safe-themes
+   (quote
+    ("938d8c186c4cb9ec4a8d8bc159285e0d0f07bad46edf20aa469a89d0d2a586ea" default))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
