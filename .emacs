@@ -51,6 +51,8 @@
 ; (Weird bug with iedit)
 (define-key global-map (kbd "C-c ;") 'iedit-mode)
 
+(define-key global-map (kbd "C-c C-c") 'comment-region)
+
 ; package-install ecb
 (require 'ecb)
 
