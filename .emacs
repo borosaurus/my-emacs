@@ -89,6 +89,7 @@
 (setq c-default-style "bsd"
       c-basic-offset 4)
 
+(setq show-trailing-whitespace t)
 
 
 (setq column-number-mode t)
