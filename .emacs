@@ -65,6 +65,7 @@
         ;; (foreground-color . "blue")
         ;; (background-color . "white")
         (font . "DejaVu Sans Mono-18")))
+ (set-face-attribute 'default nil :height 210)
 
 ;; Use ibuffer instead of regular buffer list
 (global-set-key (kbd "C-x C-b") 'ibuffer)
