@@ -1,4 +1,4 @@
-(setq package-list '(auto-complete yasnippet xcscope ecb go-mode py-autopep8 ample-theme drag-stuff imenu-list))
+(setq package-list '(auto-complete yasnippet xcscope ecb go-mode py-autopep8 ample-theme drag-stuff imenu-list ggtags flycheck fiplr exec-path-from-shell))
 
 ;; autopep8 requires you to sudo apt-get install python-autopep8
 
@@ -39,6 +39,7 @@
 ;; Use flycheck whenever we can
 ;; For python you need to sudo apt-get install pylint
 (add-hook 'after-init-hook #'global-flycheck-mode)
+(setq flycheck-temp-prefix ".flycheck")
 
 ;;(ac-config-default)
 
@@ -64,7 +65,9 @@
         (cursor-type . box)
         ;; (foreground-color . "blue")
         ;; (background-color . "white")
-        (font . "DejaVu Sans Mono-18")))
+        (font . "Monaco 20")
+        ;;(font . "DejaVu Sans Mono-18")
+        ))
  (set-face-attribute 'default nil :height 210)
 
 ;; Use ibuffer instead of regular buffer list
@@ -113,10 +116,10 @@
 ;;(global-set-key (kbd "<M-left>") 'ecb-goto-window-methods)
 ;;(global-set-key (kbd "<M-right>") 'ecb-goto-window-edit1)
 
-(global-set-key (kbd "<M-left>") 'windmove-left)
-(global-set-key (kbd "<M-right>") 'windmove-right)
-(global-set-key (kbd "<M-up>") 'windmove-up)
-(global-set-key (kbd "<M-down>") 'windmove-down)
+(global-set-key (kbd "<C-M-left>") 'windmove-left)
+(global-set-key (kbd "<C-M-right>") 'windmove-right)
+(global-set-key (kbd "<C-M-up>") 'windmove-up)
+(global-set-key (kbd "<C-M-down>") 'windmove-down)
 
 ;; gtags setup
 (require 'ggtags)
@@ -152,8 +155,16 @@
 
 ;; Go
 (add-to-list 'ac-modes 'go-mode)
-(add-hook 'before-save-hook #'gofmt-before-save)
-
+(when (memq window-system '(mac ns))
+  (exec-path-from-shell-initialize)
+  (exec-path-from-shell-copy-env "GOPATH"))
+(defun my-go-mode-hook ()
+  (add-hook 'before-save-hook 'gofmt-before-save) ; gofmt before every save
+  ; Godef jump key binding
+  (local-set-key (kbd "M-.") 'godef-jump)
+  (local-set-key (kbd "M-*") 'pop-tag-mark)
+  )
+(add-hook 'go-mode-hook 'my-go-mode-hook)
 
 ;; be able to list all functions in buffer
 (require 'imenu-list)
@@ -186,8 +197,11 @@
         (mark " " (name 16 -1) " " filename)))
 
 
-;; Whitespace 80 char limit thing
+;; Whitespace char limit thing
 (require 'whitespace)
+
+;; Actually 100 char limit
+(setq whitespace-line-column 100)
 (setq whitespace-style '(face empty tabs lines-tail trailing))
 (global-whitespace-mode t)
 
@@ -198,6 +212,8 @@
 
 (global-set-key (kbd "C-S-n") 'drag-stuff-down)
 (global-set-key (kbd "C-S-p") 'drag-stuff-up)
+
+(global-set-key (kbd "C-c C-;") 'uncomment-region)
 
 ;; pretty theme
 (load-theme 'ample t t)
@@ -218,6 +234,9 @@
 (setq ido-everywhere t)
 (ido-mode 1)
 
+;;
+(global-set-key (kbd "C-c f") 'fiplr-find-file)
+
 ;; magit
 (global-set-key (kbd "C-x g") 'magit-status)
 
@@ -229,12 +248,26 @@
   (delete-other-windows))
 (global-set-key (kbd "C-x K") 'other-window-kill-buffer)
 
+
 ;; OSX ONLY
 ;;(setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
 ;;(setq exec-path (append exec-path '("/usr/local/bin")))
 
 ;; Cool tricks (to print 1, 2, 3, and so on on each line)
 ;; (dotimes (i 20) (insert (format "%d\n" (1+ i))))
+
+(defun set-exec-path-from-shell-PATH ()
+  (let ((path-from-shell (replace-regexp-in-string
+                          "[ \t\n]*$"
+                          ""
+                          (shell-command-to-string "$SHELL --login -i -c 'echo $PATH'"))))
+    (setenv "PATH" path-from-shell)
+    (setq exec-path (split-string path-from-shell path-separator))))
+
+(when (and window-system (eq system-type 'darwin))
+  ;; When started from Emacs.app or similar, ensure $PATH
+  ;; is the same the user would see in Terminal.app
+  (set-exec-path-from-shell-PATH))
 
 
 ;; to get bindings for a command: C-h f
@@ -248,10 +281,36 @@
    ["#454545" "#cd5542" "#6aaf50" "#baba36" "#5180b3" "#ab75c3" "#68a5e9" "#bdbdb3"])
  '(custom-safe-themes
    (quote
-    ("938d8c186c4cb9ec4a8d8bc159285e0d0f07bad46edf20aa469a89d0d2a586ea" default))))
+    ("938d8c186c4cb9ec4a8d8bc159285e0d0f07bad46edf20aa469a89d0d2a586ea" default)))
+ '(package-selected-packages
+   (quote
+    (helm-git-grep helm magit fiplr web-beautify flycheck json-reformat yasnippet xcscope py-autopep8 imenu-list go-mode ggtags ecb drag-stuff auto-complete ample-theme))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
+(setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
+(setq exec-path (append exec-path '("/usr/local/bin")))
+
+(setq-default fill-column 100)
+
+
+(eval-after-load 'js2-mode
+  '(define-key js2-mode-map (kbd "C-c b") 'web-beautify-js))
+(eval-after-load 'json-mode
+  '(define-key json-mode-map (kbd "C-c b") 'web-beautify-js))
+(eval-after-load 'sgml-mode
+  '(define-key html-mode-map (kbd "C-c b") 'web-beautify-html))
+(eval-after-load 'css-mode
+  '(define-key css-mode-map (kbd "C-c b") 'web-beautify-css))
+
+
+;; git grep
+(global-set-key (kbd "C-c g") 'helm-git-grep)
+
+;; C-x SPC to select rectangle
+;; C-x r k to kill rectangle
+;; C-x r y to yank rectangle
