@@ -1,4 +1,4 @@
-(setq package-list '(auto-complete yasnippet xcscope ecb go-mode py-autopep8 ample-theme drag-stuff imenu-list ggtags flycheck fiplr exec-path-from-shell))
+(setq package-list '(auto-complete yasnippet xcscope ecb go-mode py-autopep8 ample-theme drag-stuff imenu-list ggtags flycheck fiplr exec-path-from-shell project-explorer))
 
 ;; autopep8 requires you to sudo apt-get install python-autopep8
 
@@ -16,6 +16,22 @@
 (dolist (package package-list)
   (unless (package-installed-p package)
     (package-install package)))
+
+;; disable toolbar
+(tool-bar-mode -1)
+
+;; pretty theme
+(load-theme 'ample t t)
+;;(load-theme 'ample-flat t t)
+;;(load-theme 'ample-light t t)
+;; choose one to enable
+(enable-theme 'ample)
+
+(add-hook 'after-make-frame-functions
+          (lambda (frame)
+            (with-selected-frame frame
+              (load-theme 'ample t t)
+              (enable-theme 'ample))))
 
 ; TO GET THIS RUN M-x package-install auto-complete
 ; start auto-complete with emacs
@@ -65,10 +81,10 @@
         (cursor-type . box)
         ;; (foreground-color . "blue")
         ;; (background-color . "white")
-        (font . "Monaco 20")
+        (font . "Monaco 18")
         ;;(font . "DejaVu Sans Mono-18")
         ))
- (set-face-attribute 'default nil :height 210)
+ (set-face-attribute 'default nil :height 230)
 
 ;; Use ibuffer instead of regular buffer list
 (global-set-key (kbd "C-x C-b") 'ibuffer)
@@ -154,6 +170,7 @@
 (add-to-list 'ac-modes 'rust-mode)
 
 ;; Go
+(require 'go-autocomplete)
 (add-to-list 'ac-modes 'go-mode)
 (when (memq window-system '(mac ns))
   (exec-path-from-shell-initialize)
@@ -165,6 +182,7 @@
   (local-set-key (kbd "M-*") 'pop-tag-mark)
   )
 (add-hook 'go-mode-hook 'my-go-mode-hook)
+
 
 ;; be able to list all functions in buffer
 (require 'imenu-list)
@@ -215,18 +233,6 @@
 
 (global-set-key (kbd "C-c C-;") 'uncomment-region)
 
-;; pretty theme
-(load-theme 'ample t t)
-;;(load-theme 'ample-flat t t)
-;;(load-theme 'ample-light t t)
-;; choose one to enable
-(enable-theme 'ample)
-
-(add-hook 'after-make-frame-functions
-          (lambda (frame)
-            (with-selected-frame frame
-              (load-theme 'ample t t)
-              (enable-theme 'ample))))
 
 
 ;;
@@ -284,7 +290,7 @@
     ("938d8c186c4cb9ec4a8d8bc159285e0d0f07bad46edf20aa469a89d0d2a586ea" default)))
  '(package-selected-packages
    (quote
-    (helm-git-grep helm magit fiplr web-beautify flycheck json-reformat yasnippet xcscope py-autopep8 imenu-list go-mode ggtags ecb drag-stuff auto-complete ample-theme))))
+    (project-explorer go-autocomplete helm-git-grep helm magit fiplr web-beautify flycheck json-reformat yasnippet xcscope py-autopep8 imenu-list go-mode ggtags ecb drag-stuff auto-complete ample-theme))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -295,7 +301,7 @@
 (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
 (setq exec-path (append exec-path '("/usr/local/bin")))
 
-(setq-default fill-column 100)
+(setq-default fill-column 79)
 
 
 (eval-after-load 'js2-mode
@@ -310,7 +316,48 @@
 
 ;; git grep
 (global-set-key (kbd "C-c g") 'helm-git-grep)
+(global-set-key (kbd "C-c C-x g") 'helm-git-grep-at-point)
+
+(define-key helm-map (kbd "M-n")
+    (lambda () (interactive) (helm-next-line 5)))
+(define-key helm-map (kbd "M-p")
+    (lambda () (interactive) (helm-previous-line 5)))
+
+
+;; project explore
+(global-set-key (kbd "C-c p") 'project-explorer-open)
+(global-set-key (kbd "C-c C-p C-s") 'project-explorer-helm)
 
 ;; C-x SPC to select rectangle
 ;; C-x r k to kill rectangle
 ;; C-x r y to yank rectangle
+
+;; registers
+;;C-x r <SPC> r
+;; Record the position of point and the current buffer in register r (point-to-register). 
+;; C-x r j r
+;; Jump to the position and buffer saved in register r (jump-to-register).
+
+;; To find source for a library (or package) do M-x find-library (then enter package name like: helm-git-grep or project-explorer)
+
+
+;; Make helm-git-grep remember the last thing we entered
+(setq ian-helm-git-grep-default-text "")
+
+(defun update-last-search (beg end len)
+  (if (string= (symbol-name this-command) "self-insert-command")
+      (let ((contents (minibuffer-contents)))
+        (setq ian-helm-git-grep-default-text contents))
+    nil
+    ))
+
+(defun my-gg ()
+  (interactive)
+  ;; Adds the hook before calling the block, and removes it after.
+  (minibuffer-with-setup-hook
+      (lambda ()
+        (insert ian-helm-git-grep-default-text)
+        (add-hook 'after-change-functions #'update-last-search)
+        )
+    (call-interactively 'helm-git-grep))
+ (remove-hook 'after-change-functions #'update-last-search))
