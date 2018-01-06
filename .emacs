@@ -316,8 +316,9 @@
 
 
 ;; git grep
-(global-set-key (kbd "C-c g") 'helm-git-grep)
-(global-set-key (kbd "C-c C-x g") 'helm-git-grep-at-point)
+(global-set-key (kbd "C-c g") 'vc-git-grep)
+;;(global-set-key (kbd "C-c g") 'helm-git-grep)
+;;(global-set-key (kbd "C-c C-x g") 'helm-git-grep-at-point)
 
 ;; (with-eval-after-load 'helm
 ;;   (define-key helm-map (kbd "M-n")
