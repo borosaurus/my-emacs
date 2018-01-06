@@ -150,6 +150,7 @@
 (define-key ggtags-mode-map (kbd "C-c t h") 'ggtags-view-tag-history)
 (define-key ggtags-mode-map (kbd "C-c t r") 'ggtags-find-reference)
 (define-key ggtags-mode-map (kbd "C-c t f") 'ggtags-find-file)
+(define-key ggtags-mode-map (kbd "C-c t d") 'ggtags-find-definition)
 (define-key ggtags-mode-map (kbd "C-c t c") 'ggtags-create-tags)
 (define-key ggtags-mode-map (kbd "C-c t u") 'ggtags-update-tags)
 (define-key ggtags-mode-map (kbd "C-c t g") 'ggtags-grep)
@@ -226,8 +227,8 @@
 ;; drag-stuff mode
 (drag-stuff-mode t)
 (drag-stuff-global-mode 1)
-(global-set-key (kbd "C-c h n") 'hs-show-all)
 
+(global-set-key (kbd "C-c h n") 'hs-show-all)
 (global-set-key (kbd "C-S-n") 'drag-stuff-down)
 (global-set-key (kbd "C-S-p") 'drag-stuff-up)
 
@@ -301,7 +302,7 @@
 (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
 (setq exec-path (append exec-path '("/usr/local/bin")))
 
-(setq-default fill-column 79)
+(setq-default fill-column 99)
 
 
 (eval-after-load 'js2-mode
@@ -318,10 +319,11 @@
 (global-set-key (kbd "C-c g") 'helm-git-grep)
 (global-set-key (kbd "C-c C-x g") 'helm-git-grep-at-point)
 
-(define-key helm-map (kbd "M-n")
-    (lambda () (interactive) (helm-next-line 5)))
-(define-key helm-map (kbd "M-p")
-    (lambda () (interactive) (helm-previous-line 5)))
+;; (with-eval-after-load 'helm
+;;   (define-key helm-map (kbd "M-n")
+;;     (lambda () (interactive) (helm-next-line 5)))
+;;   (define-key helm-map (kbd "M-p")
+;;     (lambda () (interactive) (helm-previous-line 5))))
 
 
 ;; project explore
@@ -361,3 +363,8 @@
         )
     (call-interactively 'helm-git-grep))
  (remove-hook 'after-change-functions #'update-last-search))
+
+;; Change default grep command
+(eval-after-load "grep"
+  '(progn
+     (grep-apply-setting 'grep-command "grep --color -n -r src -e ")))
