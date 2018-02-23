@@ -27,6 +27,9 @@
 ;; choose one to enable
 (enable-theme 'ample)
 
+;; Turn off gui dialog boxes
+(setq use-dialog-box nil)
+
 (add-hook 'after-make-frame-functions
           (lambda (frame)
             (with-selected-frame frame
@@ -84,7 +87,6 @@
         (font . "Monaco 18")
         ;;(font . "DejaVu Sans Mono-18")
         ))
- (set-face-attribute 'default nil :height 230)
 
 ;; Use ibuffer instead of regular buffer list
 (global-set-key (kbd "C-x C-b") 'ibuffer)
@@ -144,6 +146,7 @@
             (when (derived-mode-p 'c-mode 'c++-mode 'java-mode 'asm-mode)
               (ggtags-mode 1))))
 
+
 (define-key ggtags-mode-map (kbd "C-c t s") 'ggtags-find-other-symbol)
 ;;(define-key ggtags-mode-map (kbd "C-c t d") 'ggtags-find-definition)
 ;; this bound to M-.
@@ -165,6 +168,12 @@
 (global-set-key (kbd "C-c h s") 'hs-show-block)
 (global-set-key (kbd "C-c h a") 'hs-hide-all)
 (global-set-key (kbd "C-c h n") 'hs-show-all)
+
+;; find-other-file, for switching between .h and .cpp files.
+(add-hook 'c-mode-common-hook
+  (lambda()
+    (local-set-key  (kbd "C-c o") 'ff-find-other-file)))
+
 
 ;; Rust
 ;; allow autocomplete in rust mode
@@ -233,8 +242,6 @@
 (global-set-key (kbd "C-S-p") 'drag-stuff-up)
 
 (global-set-key (kbd "C-c C-;") 'uncomment-region)
-
-
 
 ;;
 (setq ido-enable-flex-matching t)
@@ -369,3 +376,6 @@
 (eval-after-load "grep"
   '(progn
      (grep-apply-setting 'grep-command "grep --color -n -r src -e ")))
+
+(set-face-attribute 'default nil :height 230)
+
