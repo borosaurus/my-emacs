@@ -1,4 +1,4 @@
-(setq package-list '(auto-complete yasnippet xcscope ecb go-mode py-autopep8 ample-theme drag-stuff imenu-list ggtags flycheck fiplr exec-path-from-shell project-explorer))
+(setq package-list '(flycheck-ycmd company company-ycmd yasnippet xcscope ecb go-mode py-autopep8 ample-theme drag-stuff imenu-list ggtags flycheck fiplr exec-path-from-shell project-explorer go-autocomplete))
 
 ;; autopep8 requires you to sudo apt-get install python-autopep8
 
@@ -36,12 +36,21 @@
               (load-theme 'ample t t)
               (enable-theme 'ample))))
 
-; TO GET THIS RUN M-x package-install auto-complete
-; start auto-complete with emacs
-(require 'auto-complete)
-; do default config for auto-complete
-(require 'auto-complete-config)
-(global-auto-complete-mode t)
+;;
+(add-hook 'after-init-hook 'global-company-mode)
+(setq company-idle-delay 0.1)
+
+;; you complete me
+(require 'ycmd)
+(add-hook 'c++-mode-hook #'global-ycmd-mode)
+(set-variable 'ycmd-server-command `("python" ,(file-truename "~/ycmd/ycmd/")))
+
+;; ycmd integration with company
+(require 'company-ycmd)
+(company-ycmd-setup)
+
+(require 'flycheck-ycmd)
+(flycheck-ycmd-setup)
 
 (set-default 'ac-sources
              '(ac-source-imenu
@@ -84,8 +93,8 @@
         (cursor-type . box)
         ;; (foreground-color . "blue")
         ;; (background-color . "white")
-        (font . "Monaco 18")
-        ;;(font . "DejaVu Sans Mono-18")
+        ;;(font . "Monaco 18")
+        (font . "DejaVu Sans Mono-18")
         ))
 
 ;; Use ibuffer instead of regular buffer list
@@ -100,7 +109,6 @@
   (require 'pyret)
   (add-to-list 'auto-mode-alist '("\\.arr$" . pyret-mode))
   (add-to-list 'file-coding-system-alist '("\\.arr\\'" . utf-8)))
-(add-to-list 'ac-modes 'pyret-mode)
 
 
 ;; Use spaces insteads of tabs
@@ -134,10 +142,10 @@
 ;;(global-set-key (kbd "<M-left>") 'ecb-goto-window-methods)
 ;;(global-set-key (kbd "<M-right>") 'ecb-goto-window-edit1)
 
-(global-set-key (kbd "<C-M-left>") 'windmove-left)
-(global-set-key (kbd "<C-M-right>") 'windmove-right)
-(global-set-key (kbd "<C-M-up>") 'windmove-up)
-(global-set-key (kbd "<C-M-down>") 'windmove-down)
+(global-set-key (kbd "<C-left>") 'windmove-left)
+(global-set-key (kbd "<C-right>") 'windmove-right)
+(global-set-key (kbd "<C-up>") 'windmove-up)
+(global-set-key (kbd "<C-down>") 'windmove-down)
 
 ;; gtags setup
 (require 'ggtags)
@@ -177,11 +185,9 @@
 
 ;; Rust
 ;; allow autocomplete in rust mode
-(add-to-list 'ac-modes 'rust-mode)
 
 ;; Go
 (require 'go-autocomplete)
-(add-to-list 'ac-modes 'go-mode)
 (when (memq window-system '(mac ns))
   (exec-path-from-shell-initialize)
   (exec-path-from-shell-copy-env "GOPATH"))
@@ -296,9 +302,10 @@
  '(custom-safe-themes
    (quote
     ("938d8c186c4cb9ec4a8d8bc159285e0d0f07bad46edf20aa469a89d0d2a586ea" default)))
+ '(imenu-list-minor-mode nil)
  '(package-selected-packages
    (quote
-    (project-explorer go-autocomplete helm-git-grep helm magit fiplr web-beautify flycheck json-reformat yasnippet xcscope py-autopep8 imenu-list go-mode ggtags ecb drag-stuff auto-complete ample-theme))))
+    (logview ag flycheck-ycmd company-ycmd company project-explorer go-autocomplete helm-git-grep helm magit fiplr web-beautify flycheck json-reformat yasnippet xcscope py-autopep8 imenu-list go-mode ggtags ecb drag-stuff auto-complete ample-theme))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -324,8 +331,6 @@
 
 ;; git grep
 (global-set-key (kbd "C-c g") 'vc-git-grep)
-;;(global-set-key (kbd "C-c g") 'helm-git-grep)
-;;(global-set-key (kbd "C-c C-x g") 'helm-git-grep-at-point)
 
 ;; (with-eval-after-load 'helm
 ;;   (define-key helm-map (kbd "M-n")
@@ -350,28 +355,6 @@
 
 ;; To find source for a library (or package) do M-x find-library (then enter package name like: helm-git-grep or project-explorer)
 
-
-;; Make helm-git-grep remember the last thing we entered
-(setq ian-helm-git-grep-default-text "")
-
-(defun update-last-search (beg end len)
-  (if (string= (symbol-name this-command) "self-insert-command")
-      (let ((contents (minibuffer-contents)))
-        (setq ian-helm-git-grep-default-text contents))
-    nil
-    ))
-
-(defun my-gg ()
-  (interactive)
-  ;; Adds the hook before calling the block, and removes it after.
-  (minibuffer-with-setup-hook
-      (lambda ()
-        (insert ian-helm-git-grep-default-text)
-        (add-hook 'after-change-functions #'update-last-search)
-        )
-    (call-interactively 'helm-git-grep))
- (remove-hook 'after-change-functions #'update-last-search))
-
 ;; Change default grep command
 (eval-after-load "grep"
   '(progn
@@ -379,3 +362,7 @@
 
 (set-face-attribute 'default nil :height 230)
 
+;; silver searcher
+(require 'ag)
+
+(icomplete-mode 1)
