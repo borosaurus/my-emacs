@@ -1,4 +1,4 @@
-(setq package-list '(flycheck-ycmd company company-ycmd yasnippet xcscope ecb go-mode py-autopep8 ample-theme drag-stuff imenu-list ggtags flycheck fiplr exec-path-from-shell project-explorer go-autocomplete))
+(setq package-list '(flycheck-ycmd company company-ycmd yasnippet xcscope ecb go-mode py-autopep8 ample-theme drag-stuff imenu-list ggtags flycheck fiplr exec-path-from-shell project-explorer go-autocomplete clang-format wgrep))
 
 ;; autopep8 requires you to sudo apt-get install python-autopep8
 
@@ -44,6 +44,9 @@
 (require 'ycmd)
 (add-hook 'c++-mode-hook #'global-ycmd-mode)
 (set-variable 'ycmd-server-command `("python" ,(file-truename "~/ycmd/ycmd/")))
+
+;; treat .h files as C++ (instead of C)
+(add-to-list 'auto-mode-alist '("\\.[h]\\'" . c++-mode))
 
 ;; ycmd integration with company
 (require 'company-ycmd)
@@ -205,6 +208,16 @@
 (global-set-key (kbd "C-'") #'imenu-list-minor-mode)
 (setq imenu-list-focus-after-activation t)
 
+;; Add build/ to the path
+(setq exec-path (append exec-path '("/home/ianboros/mybin")))
+;; clang-format buffer
+(global-set-key [C-M-tab] 'clang-format-buffer)
+;; special override for searching for failed to load
+(global-set-key (kbd "C-M-q") (lambda() (interactive) (search-forward "failed to load" nil nil 1)))
+
+
+
+
 
 
 ;; cscope
@@ -305,7 +318,7 @@
  '(imenu-list-minor-mode nil)
  '(package-selected-packages
    (quote
-    (logview ag flycheck-ycmd company-ycmd company project-explorer go-autocomplete helm-git-grep helm magit fiplr web-beautify flycheck json-reformat yasnippet xcscope py-autopep8 imenu-list go-mode ggtags ecb drag-stuff auto-complete ample-theme))))
+    (ycmd wgrep clang-format rtags logview ag flycheck-ycmd company-ycmd company project-explorer go-autocomplete helm-git-grep helm magit fiplr web-beautify flycheck json-reformat yasnippet xcscope py-autopep8 imenu-list go-mode ggtags ecb drag-stuff auto-complete ample-theme))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -330,7 +343,13 @@
 
 
 ;; git grep
-(global-set-key (kbd "C-c g") 'vc-git-grep)
+(global-set-key (kbd "C-c g")
+                (lambda ()
+                  (interactive)
+                  (progn
+                    (icomplete-mode 0) ;; icomplete mode likes to be annoying during vc-git-grep
+                    (call-interactively 'vc-git-grep)
+                    (icomplete-mode 1))))
 
 ;; (with-eval-after-load 'helm
 ;;   (define-key helm-map (kbd "M-n")
@@ -340,8 +359,8 @@
 
 
 ;; project explore
-(global-set-key (kbd "C-c p") 'project-explorer-open)
-(global-set-key (kbd "C-c C-p C-s") 'project-explorer-helm)
+;;(global-set-key (kbd "C-c p") 'project-explorer-open)
+;;(global-set-key (kbd "C-c C-p C-s") 'project-explorer-helm)
 
 ;; C-x SPC to select rectangle
 ;; C-x r k to kill rectangle
@@ -365,4 +384,27 @@
 ;; silver searcher
 (require 'ag)
 
+;; Writable grep buffer:
+;; run grep (vc-git-grep)
+;; Enable writing: C-c C-p
+;; C-c C-e to execute changes.
+;; C-x C-s to save
+;; 
+
 (icomplete-mode 1)
+
+;; rtags:
+;; Set up instructions here:
+;; https://github.com/Andersbakken/rtags
+;; Must compile with
+;; cmake -DLIBCLANG_LLVM_CONFIG_EXECUTABLE=/opt/mongodbtoolchain/v2/bin/llvm-config -DCMAKE_EXPORT_COMPILE_COMMANDS=1 .
+;; And from your mongo-server directory, run
+;; ~/rtags/bin/rc -J .
+;; Then must install latest version of rtags
+(set-variable 'rtags-path "/home/ianboros/rtags/bin/")
+(global-set-key (kbd "C->") 'rtags-find-symbol-at-point)
+(global-set-key (kbd "C-<") 'rtags-find-references)
+
+
+;; Fixing ptrace problem with gdb:
+;; echo 0 > /proc/sys/kernel/yama/ptrace_scope
