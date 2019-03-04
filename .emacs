@@ -408,3 +408,6 @@
 
 ;; Fixing ptrace problem with gdb:
 ;; echo 0 > /proc/sys/kernel/yama/ptrace_scope
+
+;; Allow emacs to display long line numbers.
+(setq line-number-display-limit-width 2000000)
