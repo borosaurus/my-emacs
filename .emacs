@@ -402,7 +402,7 @@
 ;; ~/rtags/bin/rc -J .
 ;; Then must install latest version of rtags
 (set-variable 'rtags-path "/home/ianboros/rtags/bin/")
-(global-set-key (kbd "C->") 'rtags-find-symbol-at-point)
+(global-set-key (kbd "C->") 'rtags-find-symbol)
 (global-set-key (kbd "C-<") 'rtags-find-references)
 
 
