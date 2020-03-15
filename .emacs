@@ -38,12 +38,27 @@
 
 ;;
 (add-hook 'after-init-hook 'global-company-mode)
-(setq company-idle-delay 0.1)
+(setq company-idle-delay 0.5)
 
 ;; you complete me
 (require 'ycmd)
-(add-hook 'c++-mode-hook #'global-ycmd-mode)
-(set-variable 'ycmd-server-command `("python" ,(file-truename "~/ycmd/ycmd/")))
+; new
+(add-hook 'after-init-hook #'global-ycmd-mode)
+; old
+; (add-hook 'c++-mode-hook #'global-ycmd-mode)
+
+; Don't do semantic completion by default (faster).
+(set-variable 'ycmd-force-semantic-completion nil)
+; make ycmd requests async (faster)
+(setq company-ycmd-request-sync-timeout 0)
+
+; Special function to force semantic completion.
+(defun company-ycmd-semantic-complete ()
+  (interactive)
+  (let ((ycmd-force-semantic-completion t))
+    (company-complete)))
+(global-set-key [C-tab] 'company-ycmd-semantic-complete)
+(set-variable 'ycmd-server-command `("python3" ,(file-truename "/home/ianboros/ycmd/ycmd/")))
 
 ;; treat .h files as C++ (instead of C)
 (add-to-list 'auto-mode-alist '("\\.[h]\\'" . c++-mode))
@@ -76,18 +91,14 @@
 
 ; M-x package-install yasnippet
 ; yasnippet (gives us templates for loops and functions and stuff)
-(require 'yasnippet)
-(yas-global-mode 1)
+; (require 'yasnippet)
+; (yas-global-mode 1)
 
 ; package-install iedit
 ; (Weird bug with iedit)
 (define-key global-map (kbd "C-c ;") 'iedit-mode)
 
 (define-key global-map (kbd "C-c C-c") 'comment-region)
-
-; package-install ecb
-(require 'ecb)
-
 
 (setq default-frame-alist
       '((top . 250) (left . 400)
@@ -107,11 +118,11 @@
 (setq initial-frame-alist '((top . 50) (left . 30)))
 
 ;; Pyret
-(ignore-errors
-  (add-to-list 'load-path (expand-file-name "~/.emacs.d/"))
-  (require 'pyret)
-  (add-to-list 'auto-mode-alist '("\\.arr$" . pyret-mode))
-  (add-to-list 'file-coding-system-alist '("\\.arr\\'" . utf-8)))
+;; (ignore-errors
+;;   (add-to-list 'load-path (expand-file-name "~/.emacs.d/"))
+;;   (require 'pyret)
+;;   (add-to-list 'auto-mode-alist '("\\.arr$" . pyret-mode))
+;;   (add-to-list 'file-coding-system-alist '("\\.arr\\'" . utf-8)))
 
 
 ;; Use spaces insteads of tabs
@@ -155,7 +166,9 @@
 (add-hook 'c-mode-common-hook
           (lambda ()
             (when (derived-mode-p 'c-mode 'c++-mode 'java-mode 'asm-mode)
-              (ggtags-mode 1))))
+              (ggtags-mode 1)
+              (smartparens-mode)
+              )))
 
 
 (define-key ggtags-mode-map (kbd "C-c t s") 'ggtags-find-other-symbol)
@@ -174,11 +187,11 @@
 ;; (define-key ggtags-mode-map (kbd "M-,") 'pop-tag-mark)
 
 ;; hs-minor mode (for collapsing braces)
-(add-hook 'c-mode-common-hook 'hs-minor-mode)
-(global-set-key (kbd "C-c h h") 'hs-hide-block)
-(global-set-key (kbd "C-c h s") 'hs-show-block)
-(global-set-key (kbd "C-c h a") 'hs-hide-all)
-(global-set-key (kbd "C-c h n") 'hs-show-all)
+;; (add-hook 'c-mode-common-hook 'hs-minor-mode)
+;; (global-set-key (kbd "C-c h h") 'hs-hide-block)
+;; (global-set-key (kbd "C-c h s") 'hs-show-block)
+;; (global-set-key (kbd "C-c h a") 'hs-hide-all)
+;; (global-set-key (kbd "C-c h n") 'hs-show-all)
 
 ;; find-other-file, for switching between .h and .cpp files.
 (add-hook 'c-mode-common-hook
@@ -208,8 +221,10 @@
 (global-set-key (kbd "C-'") #'imenu-list-minor-mode)
 (setq imenu-list-focus-after-activation t)
 
-;; Add build/ to the path
-(setq exec-path (append exec-path '("/home/ianboros/mybin")))
+;; Add mybin/ to the path. It contains a symlink to ~/mongo/build/clang-format so that the correct
+;; version of clang format is used.
+(setq exec-path (append exec-path '("/opt/mongodbtoolchain/v3/bin")))
+
 ;; clang-format buffer
 (global-set-key [C-M-tab] 'clang-format-buffer)
 ;; special override for searching for failed to load
@@ -318,7 +333,7 @@
  '(imenu-list-minor-mode nil)
  '(package-selected-packages
    (quote
-    (ycmd wgrep clang-format rtags logview ag flycheck-ycmd company-ycmd company project-explorer go-autocomplete helm-git-grep helm magit fiplr web-beautify flycheck json-reformat yasnippet xcscope py-autopep8 imenu-list go-mode ggtags ecb drag-stuff auto-complete ample-theme))))
+    (string-inflection smartparens ycmd wgrep clang-format rtags logview ag flycheck-ycmd company-ycmd company project-explorer go-autocomplete helm-git-grep helm magit fiplr web-beautify flycheck json-reformat yasnippet xcscope py-autopep8 imenu-list go-mode ggtags ecb drag-stuff auto-complete ample-theme))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -381,15 +396,12 @@
 
 (set-face-attribute 'default nil :height 230)
 
-;; silver searcher
-(require 'ag)
-
 ;; Writable grep buffer:
 ;; run grep (vc-git-grep)
 ;; Enable writing: C-c C-p
 ;; C-c C-e to execute changes.
 ;; C-x C-s to save
-;; 
+;;
 
 (icomplete-mode 1)
 
