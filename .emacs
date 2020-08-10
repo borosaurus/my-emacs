@@ -1,10 +1,14 @@
+(setq package-check-signature nil)
+
 (setq package-list '(flycheck-ycmd company company-ycmd yasnippet xcscope ecb go-mode py-autopep8 ample-theme drag-stuff imenu-list ggtags flycheck fiplr exec-path-from-shell project-explorer go-autocomplete clang-format wgrep))
 
 ;; autopep8 requires you to sudo apt-get install python-autopep8
 
 (require 'package)
 ; add MELPA to repository list
-(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+(add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/"))
+
 ; initialize package.elx
 (package-initialize)
 
