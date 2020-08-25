@@ -1,6 +1,6 @@
 (setq package-check-signature nil)
 
-(setq package-list '(flycheck-ycmd company company-ycmd yasnippet xcscope ecb go-mode py-autopep8 ample-theme drag-stuff imenu-list ggtags flycheck fiplr exec-path-from-shell project-explorer go-autocomplete clang-format wgrep))
+(setq package-list '(flycheck-ycmd company company-ycmd yasnippet xcscope go-mode py-autopep8 ample-theme drag-stuff imenu-list ggtags flycheck fiplr exec-path-from-shell project-explorer go-autocomplete clang-format wgrep))
 
 ;; autopep8 requires you to sudo apt-get install python-autopep8
 
@@ -155,10 +155,6 @@
     (lambda () (interactive) (next-line 5)))
 (global-set-key (kbd "M-p")
     (lambda () (interactive) (previous-line 5)))
-
-;; ecb key binding stuff
-;;(global-set-key (kbd "<M-left>") 'ecb-goto-window-methods)
-;;(global-set-key (kbd "<M-right>") 'ecb-goto-window-edit1)
 
 (global-set-key (kbd "<C-left>") 'windmove-left)
 (global-set-key (kbd "<C-right>") 'windmove-right)
@@ -337,7 +333,7 @@
  '(imenu-list-minor-mode nil)
  '(package-selected-packages
    (quote
-    (string-inflection smartparens ycmd wgrep clang-format rtags logview ag flycheck-ycmd company-ycmd company project-explorer go-autocomplete helm-git-grep helm magit fiplr web-beautify flycheck json-reformat yasnippet xcscope py-autopep8 imenu-list go-mode ggtags ecb drag-stuff auto-complete ample-theme))))
+    (string-inflection smartparens ycmd wgrep clang-format rtags logview ag flycheck-ycmd company-ycmd company project-explorer go-autocomplete helm-git-grep helm magit fiplr web-beautify flycheck json-reformat yasnippet xcscope py-autopep8 imenu-list go-mode ggtags drag-stuff auto-complete ample-theme))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
