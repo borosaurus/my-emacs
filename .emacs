@@ -41,15 +41,16 @@
               (enable-theme 'ample))))
 
 ;;
-(add-hook 'after-init-hook 'global-company-mode)
+;;(add-hook 'after-init-hook 'global-company-mode)
 (setq company-idle-delay 0.5)
 
 ;; you complete me
 (require 'ycmd)
-; new
-(add-hook 'after-init-hook #'global-ycmd-mode)
-; old
-; (add-hook 'c++-mode-hook #'global-ycmd-mode)
+(add-to-list 'ycmd-extra-conf-whitelist (expand-file-name "/home/ianboros/mongo/.ycm_extra_conf.py"))
+
+
+;; Re-enable this for ycmd
+; (add-hook 'after-init-hook #'global-ycmd-mode)
 
 ; Don't do semantic completion by default (faster).
 (set-variable 'ycmd-force-semantic-completion nil)
@@ -62,7 +63,7 @@
   (let ((ycmd-force-semantic-completion t))
     (company-complete)))
 (global-set-key [C-tab] 'company-ycmd-semantic-complete)
-(set-variable 'ycmd-server-command `("python3" ,(file-truename "/home/ianboros/ycmd/ycmd/")))
+(set-variable 'ycmd-server-command `("python3" ,(file-truename "/home/ianboros/ycmd2/ycmd/")))
 
 ;; treat .h files as C++ (instead of C)
 (add-to-list 'auto-mode-alist '("\\.[h]\\'" . c++-mode))
@@ -423,3 +424,13 @@
 
 ;; Allow emacs to display long line numbers.
 (setq line-number-display-limit-width 2000000)
+
+; enable irony
+;; (add-hook 'c++-mode-hook 'irony-mode)
+;; (eval-after-load 'flycheck
+;;   '(add-hook 'flycheck-mode-hook #'flycheck-irony-setup))
+
+
+; LSP/clangd. Clangd must be in the path. When we added the toolchain to the path, this should have been taken care of.
+; Already done above:
+;(setq exec-path (append exec-path '("/opt/mongodbtoolchain/v3/bin")))
