@@ -39,6 +39,7 @@
 (setq whitespace-line-column 100)
 (setq whitespace-style '(face empty tabs lines-tail trailing))
 (global-whitespace-mode t)
+(setq-default fill-column 99)
 
 ;; ido mode (better for finding files etc).
 (setq ido-enable-flex-matching t)
@@ -96,7 +97,7 @@
 (global-set-key [C-M-tab] 'clang-format-buffer)
 
 ;; M-. = find definition (will work with lsp mode)
-(global-set-key (kbd "C-x r") 'xref-find-references)
+(global-set-key (kbd "C-c r") 'xref-find-references)
 
 
 (custom-set-variables
