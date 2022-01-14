@@ -66,8 +66,8 @@
 ;; drag-stuff mode.
 (drag-stuff-mode t)
 (drag-stuff-global-mode 1)
-(global-set-key (kbd "C-S-n") 'drag-stuff-down)
-(global-set-key (kbd "C-S-p") 'drag-stuff-up)
+(global-set-key (kbd "C-M-n") 'drag-stuff-down)
+(global-set-key (kbd "C-M-p") 'drag-stuff-up)
 
 ;; Key binding to switch between .h and .cpp files.
 (add-hook 'c-mode-common-hook
