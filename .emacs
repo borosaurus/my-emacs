@@ -22,6 +22,18 @@
 ;; Use ibuffer rather than regular buffer list.
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 
+;; nearly all of this is the default layout
+(setq ibuffer-formats 
+      '((mark modified read-only " "
+              (name 30 30 :left :elide) ; change: 30s were originally 18s
+              " "
+              (size 9 -1 :right)
+              " "
+              (mode 16 16 :left :elide)
+              " " filename-and-process)
+        (mark " "
+              (name 16 -1)
+              " " filename)))
 ;; Treat .h files as C++ rather than C.
 (add-to-list 'auto-mode-alist '("\\.[h]\\'" . c++-mode))
 
