@@ -69,6 +69,7 @@
 (which-key-mode)
 (add-hook 'c-mode-hook 'lsp)
 (add-hook 'c++-mode-hook 'lsp)
+(global-set-key (kbd "C-x m") 'flymake-show-diagnostics-buffer)
 
 
 (setq company-idle-delay 0.0
