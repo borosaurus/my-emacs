@@ -45,7 +45,7 @@
       c-basic-offset 4)
 
 ;; Add stuff to the path (clang format, clangd etc).
-(setq exec-path (append exec-path '("/opt/mongodbtoolchain/v3/bin")))
+(setq exec-path (append exec-path '("/opt/mongodbtoolchain/v4/bin")))
 
 ;; 100 column/char limit.
 (setq whitespace-line-column 100)
