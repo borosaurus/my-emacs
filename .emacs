@@ -1,10 +1,21 @@
 (require 'package)
+
+(setq package-list '(lsp-mode which-key drag-stuff ample-theme))
+
 ; add MELPA to repository list
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
 (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/"))
 
 ; initialize package.elx
 (package-initialize)
+
+(unless package-archive-contents
+  (package-refresh-contents))
+
+; install the missing packages
+(dolist (package package-list)
+  (unless (package-installed-p package)
+    (package-install package)))
 
 ;; disable toolbar
 (tool-bar-mode -1)
@@ -44,8 +55,10 @@
 (setq c-default-style "bsd"
       c-basic-offset 4)
 
+;; Add mybin to exec path, which includes a symbolic link to clangd-18.
+(setq exec-path (append exec-path '("/home/ubuntu/mybin")))
 ;; Add stuff to the path (clang format, clangd etc).
-(setq exec-path (append exec-path '("/opt/mongodbtoolchain/v4/bin")))
+(setq exec-path (append exec-path '("/opt/mongodbtoolchain/v5/bin")))
 
 ;; 100 column/char limit.
 (setq whitespace-line-column 100)
@@ -67,8 +80,6 @@
 ;; lsp-mode. For this to work clangd *must* be in the exec path. Above we append exec-path
 ;; to ensure the full toolchain is in the path.
 (which-key-mode)
-(add-hook 'c-mode-hook 'lsp)
-(add-hook 'c++-mode-hook 'lsp)
 (global-set-key (kbd "C-x m") 'flymake-show-diagnostics-buffer)
 
 
@@ -112,6 +123,15 @@
 ;; M-. = find definition (will work with lsp mode)
 (global-set-key (kbd "C-c r") 'xref-find-references)
 
+; Disables flymake mode when lsp is on. Usually not a good idea
+;;(setq lsp-diagnostic-package :none)
+;;(setq warning-minimum-log-level :info)
+
+; I leave these disabled since we don't want LSP to always run. There's a shortcut for C-c l which
+; enables lsp above.
+(global-set-key (kbd "C-c l") 'lsp)
+;(add-hook 'c-mode-hook 'lsp)
+;(add-hook 'c++-mode-hook 'lsp)
 
 ;; Make sure to install lsp-mode, company, which-key, drag-stuff
 
@@ -121,8 +141,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   (quote
-    (clang-format yasnippet spinner lsp-mode company magit flycheck wgrep smartparens exec-path-from-shell drag-stuff ample-theme))))
+   '(gnu-elpa-keyring-update json-mode clang-format yasnippet spinner lsp-mode company magit flycheck wgrep smartparens exec-path-from-shell drag-stuff ample-theme)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
